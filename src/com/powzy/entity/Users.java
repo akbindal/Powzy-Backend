@@ -33,7 +33,13 @@ public class Users{
 		return user;
 	}
 	/**
-	 * Synthetic id
+	 * Synthetic idpublic static Key<Users> key(long id) {
+		return Key.create(Users.class, id);
+	}
+	public static Key<Users> key(long id) {
+		return Key.create(Users.class, id);
+	}
+	
 	 */
 	@Id
 	@Getter @Setter
