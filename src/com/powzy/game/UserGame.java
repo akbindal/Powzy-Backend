@@ -23,10 +23,9 @@ public class UserGame {
 	/*
 	 * levels in the game
 	 */
-	
-	@Id
 	@Getter @Setter
-	Long userGameId;
+	@Id
+	Long id;
 	
 	@Getter @Setter
 	@Index Key<Users> user;

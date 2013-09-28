@@ -80,9 +80,10 @@ public class GymGameAction {
 		Long checkInTime = req.getCurrentDate();
 		
 		//get the last level
-		UserGame ug = ofy().load().type(UserGame.class).id(userGameId).now();
+		Key<GameLaunch> parent = Key.create(GameLaunch.class, req.getGameLaunchId());
+		UserGame ug = ofy().load().type(UserGame.class).parent(parent).id(userGameId).now();
 		int levelSize = ug.getLevel().size();
-		Level lastLevel = ug.getLevel().get(levelSize);
+		Level lastLevel = ug.getLevel().get(levelSize-1);
 		Key<GameParam> key = lastLevel.getUserGameParam();
 		GymGameParam param = ofy().load().type(GymGameParam.class).id(key.getId()).now();
 		Date startDate = param.getStartDate();
@@ -90,7 +91,7 @@ public class GymGameAction {
 		String result=null;
 		ByteArrayOutputStream sos = new ByteArrayOutputStream();
 		Long timeDiff = currentDate.getTime() - startDate.getTime() ;
-		int day = (int) (timeDiff/(24*60*60*100));
+		int day = (int) (timeDiff/(24*60*60*1000));
 		if(day<0 || day > 6) {
 			BoolResponse resp = new BoolResponse(false);
 			try {

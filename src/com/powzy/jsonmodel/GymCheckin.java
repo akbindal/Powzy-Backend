@@ -18,4 +18,7 @@ public class GymCheckin implements Serializable {
 	
 	@Getter @Setter
 	Long userGameId;
+	
+	@Getter @Setter
+	Long gameLaunchId;
 }
