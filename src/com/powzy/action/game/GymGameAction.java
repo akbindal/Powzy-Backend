@@ -43,11 +43,11 @@ public class GymGameAction {
 				//gymPostLevel(jsonString, mapper);
 				break;
 			case POST_CHECKIN:
-				gymPostCheckin(jsonString, mapper);
+				result = gymPostCheckin(jsonString, mapper);
 				break;
 				
 			case POST_START_LEVEL:
-				gymStartLevel(jsonString, mapper);
+				result = gymStartLevel(jsonString, mapper);
 				break;
 		}
 		return result;
@@ -209,7 +209,7 @@ public class GymGameAction {
 		status.setLeftWorkout(7);
 		status.setTotalEarning(0);
 		status.setTotalProgress(0.00);
-		
+		status.setWager(pgi.getWager());
 		Key<GymUserStatus> gymKey = ofy().save().entity(status).now();
 		
 		ug.setUserStatus(
@@ -226,6 +226,7 @@ public class GymGameAction {
 		//return user status
 		String result=null;
 		UserStatus us = ofy().load().type(UserStatus.class).id(ug.getUserStatus().getId()).now();
+		
 		ByteArrayOutputStream sos = new ByteArrayOutputStream();
 		try {
 			mapper.writeValue(sos, us);

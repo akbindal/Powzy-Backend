@@ -13,6 +13,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import com.googlecode.objectify.Key;
+import com.powzy.game.GameLaunch;
+import com.powzy.jsonmodel.GameLaunchInput;
+import static com.powzy.OfyService.ofy;
+
 /**
  * redirect the request to relevant game
  * @author ABindal
@@ -20,8 +25,6 @@ import javax.ws.rs.core.MediaType;
  */
 @Path("/usergame")
 public class UserGameAction {
-	@Context
-	HttpServletResponse _currentResponse;
 	
 	@POST
 	@Path("/submit/{gameTypeId}/{gameAction}")
@@ -50,10 +53,8 @@ public class UserGameAction {
 	
 	@GET
 	@Path("/get/{gameTypeId}/{gameAction}")
-	@Consumes(MediaType.APPLICATION_JSON) 
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getGame(String jsonString,
-			@PathParam("gameTypeId") Integer gameTypeId,
+	public String getGame(@PathParam("gameTypeId") Integer gameTypeId,
 			@PathParam("gameAction") int gameAction) {
 		//String baseUrl = _currentResponse.g
 		
@@ -71,6 +72,22 @@ public class UserGameAction {
 		return null;
 	}
 	
+	/**
+	 * company launching the game
+	 * @param glInput
+	 * @return
+	 */
+	@POST
+	@Path("/launch")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public GameLaunchInput launchGame(GameLaunchInput glInput) {
+		GameLaunch gl = GameLaunchInput.getGameLaunch(glInput);
+		Key<GameLaunch> key = ofy().save().entity(gl).now();
+		glInput.setId(key.getId());
+		return glInput;
+	}
+
 	
 
 }
