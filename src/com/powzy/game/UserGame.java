@@ -35,13 +35,11 @@ public class UserGame {
 	List<Level> level = new ArrayList<Level>();
 	
 	@Getter @Setter
-	@Load Ref<UserStatus> userStatus;
+	@Load Key<UserStatus> userStatus;
 	
 	
 	@Getter @Setter
 	@Parent Key<GameLaunch> gameLaunch;
 	
-	
 //user feed
-	
 }

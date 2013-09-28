@@ -1,5 +1,7 @@
 package com.powzy.jsonmodel;
 
+import java.sql.Date;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.powzy.game.param.GameParam;
@@ -28,7 +30,7 @@ public class PowzyGameInitiate extends UserGameInitiate{
 	
 	public static GymGameParam convertToParam(PowzyGameInitiate pgi) {
 		GymGameParam gp = new GymGameParam();
-		gp.setStartDate(pgi.getStartDate());
+		gp.setStartDate(new Date(pgi.getStartDate()));
 		gp.setWager(pgi.getWager());
 		gp.setCommitedWorkOutdays(pgi.getCommitedWorkOutdays());
 		return gp;		

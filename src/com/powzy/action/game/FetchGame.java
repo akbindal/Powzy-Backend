@@ -67,7 +67,11 @@ public class FetchGame {
 					gameRow.add(gRow);
 					continue;
 				}
-				UserStatus uStatus = ug.getUserStatus().get();
+				
+				UserStatus uStatus = ofy().load()
+						.type(UserStatus.class)
+						.id(ug.getUserStatus()
+								.getId()).now();
 				gRow.setLastLevel(uStatus.getLastLevel());
 				gRow.setProgress(uStatus.getTotalProgress());
 				gRow.setUserGameId(ug.getUserGameId());

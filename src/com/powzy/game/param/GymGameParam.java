@@ -1,5 +1,7 @@
 package com.powzy.game.param;
 
+import java.util.Date;
+
 import com.googlecode.objectify.annotation.EntitySubclass;
 
 import lombok.Getter;
@@ -18,7 +20,7 @@ public class GymGameParam extends GameParam{
 	Integer[] commitedWorkOutdays = new Integer[7];
 	
 	@Getter @Setter
-	Long startDate;
+	Date startDate;
 	
 	@Getter @Setter
 	Integer wager;
