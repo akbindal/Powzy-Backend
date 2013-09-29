@@ -3,12 +3,14 @@ package com.powzy.action.game;
 import static com.powzy.OfyService.ofy;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.googlecode.objectify.Key;
@@ -25,6 +27,7 @@ import com.powzy.game.status.GymUserStatus;
 import com.powzy.game.status.UserStatus;
 import com.powzy.jsonmodel.BoolResponse;
 import com.powzy.jsonmodel.GymCheckin;
+import com.powzy.jsonmodel.GymInfo;
 import com.powzy.jsonmodel.GymStatusModel;
 import com.powzy.jsonmodel.LevelStatusResponse;
 import com.powzy.jsonmodel.PowzyGameInitiate;
@@ -37,7 +40,7 @@ public class GymGameAction {
 	public static final int POST_START_LEVEL = 3;
 	
 	public static final int GET_FETCH_LEVEL = 5;
-	public static final int GET_CURRENT_STATUS = 6;
+	public static final int GET_GAME_INFO = 6;
 	
 	public static String managePostRequest(String jsonString, int gameAction) {
 		String result = null;
@@ -61,8 +64,8 @@ public class GymGameAction {
 			case GET_FETCH_LEVEL:
 				return fetchGymStatus(queryParams);
 				
-			case GET_CURRENT_STATUS:
-				break;
+			case GET_GAME_INFO:
+				return getGymInfo(queryParams);
 		}
 		return null;
 	}
@@ -70,6 +73,54 @@ public class GymGameAction {
 //	public static String gymPostCheckin(String jsonstring, ObjectMapper mapper) {
 //		
 //	}
+	public static String getGymInfo(MultivaluedMap<String, String> queryParams) {
+		String usergameIdStr = queryParams.getFirst("userGameId");
+		
+		//String userIdStr = queryParams.getFirst("userId");
+		String gameLaunchIdStr = queryParams.getFirst("gameLaunchId");
+		try {	
+			Long userGameId = Long.parseLong(usergameIdStr);
+			//Long userId = Long.parseLong(userIdStr);
+			Long gameLaunchId = Long.parseLong(gameLaunchIdStr);
+			if(gameLaunchId==null) throw new UnauthorizedException();
+			
+			GameLaunch gl = ofy().load().type(GameLaunch.class).id(gameLaunchId).now();
+			if(gl==null) throw new UnauthorizedException("game doesn't exist");
+			
+			GymInfo gymInfo = new GymInfo();
+			gymInfo.setBrandUrl(gl.getGameLogoUrl());
+			gymInfo.setGameTitle("Workout Challenge");
+			gymInfo.setRules(gl.getRules());
+			//check current gyminfo
+			Key<GameLaunch> parent = Key.create(GameLaunch.class, gameLaunchId);
+			UserGame ug = ofy().load().type(UserGame.class).parent(parent).id(userGameId).now();
+			//get the last level
+			int size = ug.getLevel().size();
+			boolean isValidPact=false;
+			if(size>0) {
+				Level level = ug.getLevel().get(size-1);
+				GymGameParam gs = (GymGameParam) ofy().load().key(level.getUserGameParam()).now();
+				Long currentTime = System.currentTimeMillis();
+				Long timeDiff = currentTime-gs.getStartDate().getTime();
+				if(timeDiff>0 && timeDiff< 7*24*60*60*1000)
+					isValidPact = true;
+			}
+			gymInfo.setPactValid(isValidPact);
+			ByteArrayOutputStream sos = new ByteArrayOutputStream();
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				mapper.writeValue(sos, gymInfo);
+			} catch (Exception e) {
+				throw new UnauthorizedException("object parser error");
+			}
+			return sos.toString();
+		} catch(NumberFormatException e) {
+			return "id's error";
+		} catch(Exception e) {
+			return "json mapping excepiton";
+		} 
+	}
+	
 	public static String fetchGymStatus(MultivaluedMap<String, String> queryParams) {
 		String usergameIdStr = queryParams.getFirst("userGameId");
 		String levelStr = queryParams.getFirst("level");
@@ -112,7 +163,7 @@ public class GymGameAction {
 			levelResp.setWorkOutDays(ggs.getWorkOutDays());
 			levelResp.setIsCompleted(ggs.isCompleted()?1:0);
 			levelResp.setCommittedWorkDays(gp.getCommitedWorkOutdays());
-			levelResp.setEarning(gp.getWager());
+			levelResp.setWager(gp.getWager());
 			levelResp.setLevel(levelId);
 			resp.setLevel(levelResp);
 			ByteArrayOutputStream sos = new ByteArrayOutputStream();
@@ -252,6 +303,7 @@ public class GymGameAction {
 		//get the last level
 		Key<GameLaunch> parent = Key.create(GameLaunch.class, pgi.getGameLaunchId());
 		UserGame ug = ofy().load().type(UserGame.class).parent(parent).id(userGameId).now();
+		
 		if(ug==null) {
 			Long userId = null;
 			Long gameLaunchId = null;
@@ -279,7 +331,7 @@ public class GymGameAction {
 					Key.create(UserStatus.class, gymKey.getId())
 					);
 			//user status saved
-			ofy().save().entity(ug).now();
+			userGameId = ofy().save().entity(ug).now().getId();
 			//get Game alunch and add user
 			Ref<Users> user = Ref.create(Key.create(Users.class, userId));
 			Ref<GameLaunch> glRef = Ref.create(GameLaunch.key(gameLaunchId));
@@ -303,7 +355,7 @@ public class GymGameAction {
 			status.setTotalEarning(0);
 			status.setTotalProgress(0.00);
 			ofy().save().entity(status).now();
-			ofy().save().entity(ug).now();
+			userGameId =ofy().save().entity(ug).now().getId();
 		}
 		//return user status
 		String result=null;
@@ -311,6 +363,7 @@ public class GymGameAction {
 		
 		ByteArrayOutputStream sos = new ByteArrayOutputStream();
 		try {
+			us.setUserGameId(userGameId);
 			mapper.writeValue(sos, us);
 		} catch (Exception e) {
 			throw new UnauthorizedException("object parser error");

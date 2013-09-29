@@ -21,7 +21,7 @@ public class LevelStatusResponse implements Serializable{
 	Integer[] workOutDays = new Integer[7];
 	
 	@Getter @Setter
-	Integer earning;
+	Integer wager;
 	
 	@Getter @Setter
 	Integer isCompleted;

@@ -21,8 +21,9 @@ public class UserStatus implements Serializable {
 	 */
 	private static final long serialVersionUID = -5195730236473719685L;
 
-	@Id
-	Long userGameStatusId;
+	@Id 
+	@Getter @Setter
+	Long userGameId; //just for json response
 	
 	@Getter @Setter
 	Double totalProgress;
