@@ -12,6 +12,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
 
 import com.googlecode.objectify.Key;
 import com.powzy.game.GameLaunch;
@@ -55,13 +57,15 @@ public class UserGameAction {
 	@Path("/get/{gameTypeId}/{gameAction}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getGame(@PathParam("gameTypeId") Integer gameTypeId,
-			@PathParam("gameAction") int gameAction) {
+			@PathParam("gameAction") int gameAction, @Context UriInfo uriInfo) {
 		//String baseUrl = _currentResponse.g
+		MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 		
 		switch(gameTypeId) {
 			case 1:
 				// call the games
-			//	return GymGameAction.manageGetRequest(jsonString, gameAction);
+				return GymGameAction.manageGetRequest(gameAction, 
+						queryParams);
 			case 2:
 				//url = "jkljklj ";
 				break;
