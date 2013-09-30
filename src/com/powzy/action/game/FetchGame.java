@@ -5,10 +5,12 @@ import static com.powzy.OfyService.ofy;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.googlecode.objectify.Key;
@@ -29,7 +31,9 @@ public class FetchGame {
 	@Path("/get")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<GameBrandRow> fetchGameByBrand(@QueryParam("uid")Long userId, 
-			@QueryParam("bid") Long businessId)  {
+			@QueryParam("bid") Long businessId, @Context HttpServletResponse resp)  {
+		
+		resp.addHeader("Access-Control-Allow-Origin", "*");
 		Key<BusinessEntity> owner = 
 				Key.create(BusinessEntity.class, businessId);
 		/*

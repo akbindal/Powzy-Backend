@@ -3,6 +3,7 @@ package com.powzy.action.game;
 import static com.powzy.OfyService.ofy;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -33,9 +34,10 @@ public class UserGameAction {
 	public String putGame(String jsonString,
 			@PathParam("gameTypeId") Integer gameTypeId,
 			@PathParam("gameAction") int gameAction,
-			@Context HttpServletRequest httpRequest) {
+			@Context HttpServletResponse response) {
 		//String baseUrl = _currentResponse.g
 		//String url = getURL(httpRequest);
+		response.addHeader("Access-Control-Allow-Origin", "*");
 		switch(gameTypeId) {
 			case 1:
 				// call the games
@@ -55,8 +57,10 @@ public class UserGameAction {
 	@Path("/get/{gameTypeId}/{gameAction}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getGame(@PathParam("gameTypeId") Integer gameTypeId,
-			@PathParam("gameAction") int gameAction, @Context UriInfo uriInfo) {
+			@PathParam("gameAction") int gameAction, @Context UriInfo uriInfo,
+			@Context HttpServletResponse resp) {
 		//String baseUrl = _currentResponse.g
+		resp.addHeader("Access-Control-Allow-Origin", "*");
 		MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 		
 		switch(gameTypeId) {
