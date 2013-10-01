@@ -14,10 +14,13 @@ public class GymStatusModel implements Serializable{
 
 	
 	@Getter @Setter
-	Integer lastPacts;
+	Integer totalPact;
 	
 	@Getter @Setter
 	Integer totalEarning;
+	
+	@Getter @Setter
+	Integer totalWorkout;
 	
 	@Getter @Setter
 	LevelStatusResponse level;

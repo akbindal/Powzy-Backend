@@ -24,5 +24,5 @@ public class LevelStatusResponse implements Serializable{
 	Integer wager;
 	
 	@Getter @Setter
-	Integer isCompleted;
+	Integer winningPrize;
 }

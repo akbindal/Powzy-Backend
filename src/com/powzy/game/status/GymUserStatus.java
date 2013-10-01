@@ -17,6 +17,9 @@ public class GymUserStatus extends UserStatus {
 	@Getter @Setter
 	Integer totalEarning;
 	
+	@Getter @Setter
+	Integer totalWorkout;
+	
 	//@Getter @Setter
 //	Integer leftWorkout;
 	

@@ -29,5 +29,5 @@ public class UserStatus implements Serializable {
 	Double totalProgress;
 	
 	@Getter @Setter
-	Integer lastLevel;
+	Integer totalLevel;
 }

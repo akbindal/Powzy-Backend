@@ -76,7 +76,7 @@ public class FetchGame {
 						.type(UserStatus.class)
 						.id(ug.getUserStatus()
 								.getId()).now();
-				gRow.setLastLevel(uStatus.getLastLevel());
+				gRow.setTotalLevel(uStatus.getTotalLevel());
 				gRow.setProgress(uStatus.getTotalProgress());
 				gRow.setUserGameId(ug.getId());
 			} 

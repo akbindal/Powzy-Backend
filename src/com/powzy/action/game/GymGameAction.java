@@ -143,8 +143,9 @@ public class GymGameAction {
 			//get userstatus
 			Key<UserStatus> userstatus = ug.getUserStatus();
 			GymUserStatus gus = ofy().load().type(GymUserStatus.class).id(userstatus.getId()).now();
-			resp.setLastPacts(ug.getLevel().size());
+			resp.setTotalPact(ug.getLevel().size());
 			resp.setTotalEarning(gus.getTotalEarning());
+			resp.setTotalWorkout(gus.getTotalWorkout());
 			LevelStatusResponse levelResp = new LevelStatusResponse();
 			Level level;
 			
@@ -161,7 +162,7 @@ public class GymGameAction {
 			GymGameStatus ggs = (GymGameStatus) ofy().load().key(gusKey).now();
 			
 			levelResp.setWorkOutDays(ggs.getWorkOutDays());
-			levelResp.setIsCompleted(ggs.isCompleted()?1:0);
+			levelResp.setWinningPrize(ggs.getEarning());
 			levelResp.setCommittedWorkDays(gp.getCommitedWorkOutdays());
 			levelResp.setWager(gp.getWager());
 			levelResp.setLevel(levelId);
@@ -232,14 +233,14 @@ public class GymGameAction {
 			}
 			return sos.toString();
 		}
-		
+		//valid checkin
 		//get Game status
 		Key<GameStatus> gsKey = lastLevel.getUserGameStatus();
 		GymGameStatus ggs = ofy().load().type(GymGameStatus.class).id(gsKey.getId()).get();
 		Integer[] workeddays = ggs.getWorkOutDays();
 		workeddays[day]=1;
 		ggs.setWorkOutDays(workeddays);
-		
+	
 		int countWorkCompleted=0;
 		for(int i = 0; i< 7 ;i++) {
 			if(workeddays[i]==null)
@@ -251,7 +252,11 @@ public class GymGameAction {
 		// gymUserStatus 
 		Key<UserStatus> gusKey = ug.getUserStatus();
 		GymUserStatus gus = ofy().load().type(GymUserStatus.class).id(gusKey.getId()).now();
-		
+		Integer totalWorkout = gus.getTotalWorkout();
+		if(totalWorkout==null)
+			totalWorkout=0;
+		totalWorkout++;
+		gus.setTotalWorkout(totalWorkout);
 		// countworkLeft = 1
 		if(countWorkLeft ==0) {
 			//game is completed;
@@ -260,7 +265,6 @@ public class GymGameAction {
 			lastLevel.setLastProgress(100.00);
 			int totalwager = param.getWager()+gus.getTotalEarning();
 			gus.setTotalEarning(totalwager);
-			
 			//
 		} else {
 			
@@ -289,6 +293,7 @@ public class GymGameAction {
 		}
 		return sos.toString();
 	}
+	
 	
 	public static String gymStartLevel(String jsonString, ObjectMapper mapper) {
 		//convert Powzy game Initiate
@@ -322,9 +327,10 @@ public class GymGameAction {
 			ug.setLevel(levelList);
 			//save usergame
 			GymUserStatus status = new GymUserStatus();
-			status.setLastLevel(1);
+			status.setTotalLevel(1);
 			status.setTotalEarning(0);
 			status.setTotalProgress(0.00);
+			status.setTotalWorkout(0);
 			Key<GymUserStatus> gymKey = ofy().save().entity(status).now();
 			
 			ug.setUserStatus(
@@ -351,9 +357,10 @@ public class GymGameAction {
 			Key<UserStatus> ustatus = ug.getUserStatus();
 			
 			GymUserStatus status = ofy().load().type(GymUserStatus.class).id(ustatus.getId()).now();
-			status.setLastLevel(levelList.size()-1);
+			status.setTotalLevel(levelList.size());
 			status.setTotalEarning(0);
 			status.setTotalProgress(0.00);
+			
 			ofy().save().entity(status).now();
 			userGameId =ofy().save().entity(ug).now().getId();
 		}

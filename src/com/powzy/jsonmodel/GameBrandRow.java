@@ -25,7 +25,7 @@ public class GameBrandRow implements Serializable {
 	String gameTitle;
 	
 	@Getter @Setter
-	Integer lastLevel;
+	Integer totalLevel;
 	
 	@Getter @Setter
 	String shortDesc;
