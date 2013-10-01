@@ -63,7 +63,27 @@ public class BusinessInfo {
 		else 
 			return entity;
 	}
-
+	
+	@POST
+	@Path("/category")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Set<BusinessEntity> getBusinessCategory(final String categoryList) {
+		String[] items = categoryList.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\"", "").split(",");
+		Long[] results = new Long[items.length];
+		for (int i = 0; i < items.length; i++) {
+		    try {
+		        results[i] = Long.parseLong(items[i]);
+		    } catch (NumberFormatException nfe) {};
+		}
+		Set<BusinessEntity> entities = new HashSet<BusinessEntity>();
+		for(Long cat: results) {
+			Ref<Category> ref = Ref.create(Key.create(Category.class, cat));
+			entities.addAll(ofy().load().type(BusinessEntity.class).filter("categories", ref).list());
+		}
+		return entities;
+	}
+	
 	@POST
 	@Path("/put")
 	@Consumes(MediaType.APPLICATION_JSON)
