@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
@@ -19,6 +20,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Ref;
 import com.powzy.entity.BusinessEntity;
@@ -27,12 +32,14 @@ import com.powzy.entity.Category;
 import com.powzy.entity.Users;
 import com.powzy.jsonmodel.BusinessView;
 import com.powzy.jsonmodel.Signup;
+import com.powzy.util.JsonRequestException;
 import com.powzy.util.UnauthorizedException;
 
 
 @Path("/businessInfo")
 public class BusinessInfo {
-
+	private static final Logger log = Logger.getLogger(BusinessInfo.class.getName());
+	
 	HttpServletResponse response;
 	
 	//post
@@ -68,20 +75,39 @@ public class BusinessInfo {
 	@Path("/category")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Set<BusinessEntity> getBusinessCategory(final String categoryList) {
-		String[] items = categoryList.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\"", "").split(",");
-		Long[] results = new Long[items.length];
-		for (int i = 0; i < items.length; i++) {
-		    try {
-		        results[i] = Long.parseLong(items[i]);
-		    } catch (NumberFormatException nfe) {};
+	public BusinessView[] getBusinessCategory(String categoryList) {
+		//String[] items = categoryList.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\"", "").split(",");
+		Long[] results;
+		log.info(categoryList + " is requested");
+		try {
+			int lastIndex = categoryList.length();
+			categoryList = categoryList.substring(1, lastIndex-1);
+			ObjectMapper mapper = new ObjectMapper();
+			results = mapper.readValue(categoryList, Long[].class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new JsonRequestException("integer array parsing error");
 		}
-		Set<BusinessEntity> entities = new HashSet<BusinessEntity>();
-		for(Long cat: results) {
-			Ref<Category> ref = Ref.create(Key.create(Category.class, cat));
-			entities.addAll(ofy().load().type(BusinessEntity.class).filter("categories", ref).list());
+		List<BusinessEntity> list = new ArrayList<BusinessEntity>();
+		if(results ==null || results.length==0) {
+			log.info("categories added");
+			list = ofy().load().type(BusinessEntity.class).list();
+		} else {
+			Set<BusinessEntity> entities = new HashSet<BusinessEntity>();
+			for(Long cat: results) {
+				Ref<Category> ref = Ref.create(Key.create(Category.class, cat));
+				entities.addAll(ofy().load().type(BusinessEntity.class).filter("categories", ref).list());
+			}
+			log.info("categories added list as well");
+			list.addAll(entities);
 		}
-		return entities;
+		
+		BusinessView[] viewList = new BusinessView[list.size()];
+		for(int i = 0 ; i< list.size(); i++) {
+			viewList[i] = BusinessView.getLongDescription(list.get(i), 787878787l);
+		}
+		return viewList;
 	}
 	
 	@POST
