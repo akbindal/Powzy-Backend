@@ -1,0 +1,24 @@
+/*
+ * http://www.aplus1games.com/
+ * Copyright 2013, Aniruddha Loya
+ * Date: 2013-10-04
+ *
+ * Copyright (C) 2013 by Aniruddha Loya
+ *
+ * Permission is hereby granted, as per the collaboration agreement for ICC competition 2013,
+ * to team POWZY of this software and associated documentation files (the "Game"), to modify
+ * and test it for integrating with their application. The final Game can, however, only be
+ * hosted on www.aplus1games.com unless agreed upon otherwise.
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+var sprites=(function(){return{"game1.png":{frames:{"brand_bar.png":{frame:{x:2,y:2,w:640,h:186},rotated:false,trimmed:true,spriteSourceSize:{x:0,y:1,w:640,h:186},sourceSize:{w:640,h:188}},"checkbox.png":{frame:{x:644,y:2,w:50,h:50},rotated:false,trimmed:false,spriteSourceSize:{x:0,y:0,w:50,h:50},sourceSize:{w:50,h:50}},"checkbox_on.png":{frame:{x:696,y:2,w:50,h:50},rotated:false,trimmed:false,spriteSourceSize:{x:0,y:0,w:50,h:50},sourceSize:{w:50,h:50}},"green_circle_.png":{frame:{x:748,y:2,w:185,h:187},rotated:false,trimmed:true,spriteSourceSize:{x:3,y:1,w:185,h:187},sourceSize:{w:191,h:191}},"notebook.png":{frame:{x:2,y:191,w:411,h:593},rotated:false,trimmed:true,spriteSourceSize:{x:0,y:1,w:411,h:593},sourceSize:{w:413,h:595}},"orange_button.png":{frame:{x:415,y:191,w:246,h:66},rotated:false,trimmed:true,spriteSourceSize:{x:0,y:1,w:246,h:66},sourceSize:{w:248,h:68}},"orange_circle_button_.png":{frame:{x:663,y:191,w:180,h:183},rotated:false,trimmed:true,spriteSourceSize:{x:0,y:1,w:180,h:183},sourceSize:{w:182,h:185}},"orange_small_button.png":{frame:{x:845,y:191,w:111,h:66},rotated:false,trimmed:true,spriteSourceSize:{x:0,y:1,w:111,h:66},sourceSize:{w:113,h:68}},"progress_base.png":{frame:{x:2,y:786,w:324,h:326},rotated:false,trimmed:true,spriteSourceSize:{x:2,y:1,w:324,h:326},sourceSize:{w:330,h:330}},"progress_button_.png":{frame:{x:328,y:786,w:263,h:296},rotated:false,trimmed:false,spriteSourceSize:{x:0,y:0,w:263,h:296},sourceSize:{w:263,h:296}},"progress_greenbar.png":{frame:{x:593,y:786,w:190,h:152},rotated:false,trimmed:true,spriteSourceSize:{x:3,y:4,w:190,h:152},sourceSize:{w:196,h:160}},"progress_redbar.png":{frame:{x:2,y:1114,w:303,h:303},rotated:false,trimmed:true,spriteSourceSize:{x:4,y:4,w:303,h:303},sourceSize:{w:311,h:311}},"progress_yellowbar.png":{frame:{x:307,y:1114,w:152,h:280},rotated:false,trimmed:true,spriteSourceSize:{x:4,y:3,w:152,h:280},sourceSize:{w:160,h:286}},"qrscanner.png":{frame:{x:461,y:1114,w:400,h:337},rotated:false,trimmed:false,spriteSourceSize:{x:0,y:0,w:400,h:337},sourceSize:{w:400,h:337}},"red_circle_.png":{frame:{x:2,y:1453,w:185,h:187},rotated:false,trimmed:true,spriteSourceSize:{x:3,y:1,w:185,h:187},sourceSize:{w:191,h:191}},"stake_minus.png":{frame:{x:189,y:1453,w:59,h:61},rotated:false,trimmed:true,spriteSourceSize:{x:1,y:0,w:59,h:61},sourceSize:{w:61,h:63}},"stake_plus.png":{frame:{x:250,y:1453,w:59,h:61},rotated:false,trimmed:true,spriteSourceSize:{x:1,y:0,w:59,h:61},sourceSize:{w:61,h:63}},"yellow_circle_.png":{frame:{x:311,y:1453,w:185,h:187},rotated:false,trimmed:true,spriteSourceSize:{x:3,y:1,w:185,h:187},sourceSize:{w:191,h:191}}},meta:{app:"http://www.codeandweb.com/texturepacker ",version:"1.0",image:"game1_general.png",format:"RGBA8888",size:{w:1024,h:2048},scale:"1",smartupdate:"$TexturePacker:SmartUpdate:78869bbf2fa0304763d42a323d02b11e:1/1$"}}}})();

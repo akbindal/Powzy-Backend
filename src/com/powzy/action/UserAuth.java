@@ -5,10 +5,13 @@ import static com.powzy.OfyService.ofy;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -22,6 +25,8 @@ import javax.ws.rs.core.MediaType;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+
 
 import com.powzy.entity.BusinessEntity;
 import com.powzy.entity.UserEmailLookup;
@@ -40,14 +45,24 @@ public class UserAuth {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Users signupUser(final Signup newSignup) throws IOException {
 		Integer signupType = newSignup.getSignupType();
-
-		String authId = newSignup.getAuthId();
+		String authToken = newSignup.getAuthToken();
+		String authId = null;
+		if(signupType==UserEmailLookup.FACEBOOK_SIGNUP) {
+			authId = getFBId(authToken);
+		} else {
+			authId = newSignup.getAuthId();
+		} 
+		if(authId==null)
+			throw new UnauthorizedException("wrong access token");
+		
 		//check with powzy
 		//and third party if user can be created
-		
-		if(isUserExist(authId)) 
-			throw new UnauthorizedException("user exist");
-		String authToken = newSignup.getAuthToken();
+		//TODO:: login functionality
+		if(isUserExist(authId)) {
+			Users user = ofy().load().getUserLookup(authId).getEntity();
+			return user;
+		}
+			
 		Users user;
 		switch(signupType) {
 			case UserEmailLookup.FACEBOOK_SIGNUP: {
@@ -64,6 +79,36 @@ public class UserAuth {
 		user = ofy().load().getUserLookup(authId).getEntity();
 		if(user==null) throw new UnauthorizedException("database persistence error");
 		return user;
+	}
+	
+	String getFBId(String accessToken) {
+		try {
+			URL url = new URL("https://graph.facebook.com/me?fields=id&access_token="+accessToken);
+			BufferedReader reader;
+			try {
+				reader = new BufferedReader(new InputStreamReader(url.openStream()));
+				String line;
+				String response="";
+				while ((line = reader.readLine()) != null) {
+					response = response + line;
+			    }
+			    reader.close();
+			    Map<String,String> map = new HashMap<String,String>();
+				ObjectMapper mapper = new ObjectMapper();
+				map = mapper.readValue(response, 
+					    new TypeReference<HashMap<String,String>>(){}); 
+				return map.get("id");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+			    
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	Users createFBUser(String authId, String authToken) {
@@ -110,7 +155,7 @@ public class UserAuth {
 		FbUser fbUser;
 		try {
 			String graph;
-			String g = "https://graph.facebook.com/me?fields="+authId+"&access_token="+authToken;
+			String g = "https://graph.facebook.com/me?access_token"+authToken;
 			URL u = new URL(g);
             URLConnection c = u.openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
@@ -121,16 +166,21 @@ public class UserAuth {
             in.close();
             graph = b.toString();
             if(graph==null || graph.trim().length()==0) throw new Exception();
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(org.codehaus.jackson.map.DeserializationConfig.Feature.AUTO_DETECT_FIELDS, true);
+
             fbUser = new ObjectMapper().readValue(graph, FbUser.class);
             String fbId = fbUser.getId();
             if(fbUser==null ||fbId==null || fbId.trim().length()==0)
             	throw new Exception();
      
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new UnauthorizedException("facebook connection problem");
 		}
 		return fbUser;
 	}
+	
 	
 	@POST
 	@Path("/login")
@@ -148,7 +198,6 @@ public class UserAuth {
 			case UserEmailLookup.FACEBOOK_SIGNUP:
 			{
 				user = ofy().load().getFBUserbyId(authId);
-				
 				//facebook authorization
 				//TODO:
 			}

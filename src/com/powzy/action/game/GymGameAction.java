@@ -95,17 +95,28 @@ public class GymGameAction {
 			Key<GameLaunch> parent = Key.create(GameLaunch.class, gameLaunchId);
 			UserGame ug = ofy().load().type(UserGame.class).parent(parent).id(userGameId).now();
 			//get the last level
-			int size = ug.getLevel().size();
-			boolean isValidPact=false;
-			if(size>0) {
-				Level level = ug.getLevel().get(size-1);
-				GymGameParam gs = (GymGameParam) ofy().load().key(level.getUserGameParam()).now();
-				Long currentTime = System.currentTimeMillis();
-				Long timeDiff = currentTime-gs.getStartDate().getTime();
-				if(timeDiff>0 && timeDiff< 7*24*60*60*1000)
-					isValidPact = true;
+			if(ug==null)  {
+				gymInfo.setPactValid(false);
+			}else {
+				if(ug.getLevel()==null)
+					gymInfo.setPactValid(false);
+				else {
+					int size = ug.getLevel().size();
+					boolean isValidPact=false;
+					if(size>0) {
+						Level level = ug.getLevel().get(size-1);
+						GymGameParam gs = (GymGameParam) ofy().load().key(level.getUserGameParam()).now();
+						Long currentTime = System.currentTimeMillis();
+						Long timeDiff = currentTime-gs.getStartDate().getTime();
+						if(timeDiff>0 && timeDiff< 7*24*60*60*1000)
+							isValidPact = true;
+						gymInfo.setPactValid(isValidPact);
+					} else{
+						gymInfo.setPactValid(false);
+					}
+				}
 			}
-			gymInfo.setPactValid(isValidPact);
+			
 			ByteArrayOutputStream sos = new ByteArrayOutputStream();
 			ObjectMapper mapper = new ObjectMapper();
 			try {

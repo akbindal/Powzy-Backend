@@ -38,6 +38,7 @@ public class UserGameAction {
 		//String baseUrl = _currentResponse.g
 		//String url = getURL(httpRequest);
 		response.addHeader("Access-Control-Allow-Origin", "*");
+		//response.addHeader("Access-Control-Allow-Origin", "http://aplus1games.com, http:");
 		response.addHeader("Access-Control-Allow-Headers", "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With");
 		response.addHeader("Access-Control-Allow-Methods", "GET, PUT, POST");
 		switch(gameTypeId) {
@@ -63,6 +64,7 @@ public class UserGameAction {
 			@Context HttpServletResponse resp) {
 		//String baseUrl = _currentResponse.g
 		resp.addHeader("Access-Control-Allow-Origin", "*");
+		//resp.addHeader("Access-Control-Allow-Origin", "http://aplus1games.com");
 		resp.addHeader("Access-Control-Allow-Headers", "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With");
 		resp.addHeader("Access-Control-Allow-Methods", "GET, PUT, POST");
 		MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
