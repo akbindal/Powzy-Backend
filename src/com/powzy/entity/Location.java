@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.googlecode.objectify.annotation.Embed;
 
 import lombok.Getter;
@@ -11,6 +13,7 @@ import lombok.Setter;
 
 @Embed
 @XmlRootElement
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Location implements Serializable {
 	
 	/**

@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +19,7 @@ import com.googlecode.objectify.annotation.Load;
 @Entity
 @NoArgsConstructor
 @XmlRootElement
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class UserEmailLookup{
 	public final static int FACEBOOK_SIGNUP = 0;
 	public final static int GOOGLE_SIGNUP = 1;

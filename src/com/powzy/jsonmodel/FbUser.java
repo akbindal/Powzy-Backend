@@ -4,10 +4,14 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.annotate.JsonAnySetter;
 import com.powzy.entity.Users;
 
-
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class FbUser implements Serializable {
 	
 	/**
@@ -22,15 +26,7 @@ public class FbUser implements Serializable {
 	String last_name;
 	
 	@Getter @Setter
-	String username;
-	
-	@Getter @Setter
 	String email;
-	
-	@Getter @Setter
-	String name;
-	
-	
 	
 	@Getter @Setter
 	String id;

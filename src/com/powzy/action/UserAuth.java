@@ -22,15 +22,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.type.TypeReference;
 
 
 import com.powzy.entity.BusinessEntity;
 import com.powzy.entity.UserEmailLookup;
 import com.powzy.entity.Users;
+import com.powzy.jsonmodel.FbFriend;
 import com.powzy.jsonmodel.FbUser;
 import com.powzy.jsonmodel.Signup;
 import com.powzy.util.UnauthorizedException;
@@ -103,7 +108,6 @@ public class UserAuth {
 				e.printStackTrace();
 				return null;
 			}
-			    
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -114,6 +118,11 @@ public class UserAuth {
 	Users createFBUser(String authId, String authToken) {
 		//is fb authorized
 		Users user = getFBAuthorizedUser(authId, authToken);
+		if(user==null) throw new UnauthorizedException("facebook login error");
+		if(user!=null) {
+			List<FbFriend> friends = fetchFbUser(authToken);
+			if(friends!=null) user.setFriends(friends);
+		}
 		ofy().save().entity(user).now();
 		ofy().save().entity(
 				new UserEmailLookup(authId, user)
@@ -152,10 +161,10 @@ public class UserAuth {
 	}
 	
 	FbUser getFBUser(String authId, String authToken) {
-		FbUser fbUser;
+		FbUser fbUser=null;
 		try {
 			String graph;
-			String g = "https://graph.facebook.com/me?access_token"+authToken;
+			String g = "https://graph.facebook.com/me?access_token="+authToken;
 			URL u = new URL(g);
             URLConnection c = u.openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
@@ -166,10 +175,17 @@ public class UserAuth {
             in.close();
             graph = b.toString();
             if(graph==null || graph.trim().length()==0) throw new Exception();
+            fbUser = new FbUser();
             ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(org.codehaus.jackson.map.DeserializationConfig.Feature.AUTO_DETECT_FIELDS, true);
-
-            fbUser = new ObjectMapper().readValue(graph, FbUser.class);
+            Map<String, String> map = mapper.readValue(graph, Map.class);
+            fbUser.setId(map.get("id"));
+            fbUser.setEmail(map.get("email"));
+            try {
+            fbUser.setFirst_name(map.get("first_name"));
+            fbUser.setLast_name(map.get("last_name"));
+            } catch(Exception e) {
+            	
+            }
             String fbId = fbUser.getId();
             if(fbUser==null ||fbId==null || fbId.trim().length()==0)
             	throw new Exception();
@@ -181,6 +197,41 @@ public class UserAuth {
 		return fbUser;
 	}
 	
+	public List<FbFriend> fetchFbUser(String accessToken) {
+		try {
+		String graph;
+		String g = "https://graph.facebook.com/me/friends?access_token="+accessToken;
+		URL u = new URL(g);
+        URLConnection c = u.openConnection();
+        BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
+        String inputLine;
+        StringBuffer b = new StringBuffer();
+        while ((inputLine = in.readLine()) != null)
+            b.append(inputLine + "\n");            
+        in.close();
+        graph = b.toString();
+        if(graph==null || graph.trim().length()==0) throw new Exception();
+        List<FbFriend> friends = new ArrayList<FbFriend>();
+        ObjectMapper mapper = new ObjectMapper();
+        JsonFactory jf = new JsonFactory();
+        JsonParser jp = jf.createJsonParser(graph);
+        final JsonNode arrNode = mapper.readTree(jp).get("objects");
+        if (arrNode.isArray()) {
+        	int count=0;
+            for (final JsonNode objNode : arrNode) {
+            	FbFriend frnd = new FbFriend();
+            	frnd.setName(objNode.get("name").getTextValue());
+            	frnd.setId(objNode.get("id").getTextValue());
+            	friends.add(frnd);
+            	count++;
+            	if(count>20) break;
+            }
+        }
+        return friends;
+		} catch(Exception e) {
+			return null;
+		}
+	}
 	
 	@POST
 	@Path("/login")
@@ -247,8 +298,8 @@ public class UserAuth {
 	public List<Users> getFriendList(@PathParam("id") Long id) {
 		List<Users> friends = new ArrayList<Users>();
 		Users user = ofy().load().userById(id);
-		for(Long friendId:user.getFriends()){
-			friends.add(ofy().load().userById(friendId));
+		for(FbFriend friendId:user.getFriends()){
+			//friends.add(ofy().load().userById(friendId));
 		}
 		return friends;
 	}

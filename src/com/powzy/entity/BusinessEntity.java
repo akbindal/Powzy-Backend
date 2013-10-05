@@ -13,6 +13,8 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.google.appengine.api.users.User;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Ref;
@@ -77,7 +79,7 @@ public class BusinessEntity implements Serializable {
 	
 	
 	@Getter @Setter
-	@Index Set<Key<Users>> lovers = new HashSet<Key<Users>>();
+	@Index  Set<Key<Users>> lovers = new HashSet<Key<Users>>();
 	
 	@Getter @Setter
 	@Ignore String password; //not persisted here ... just for easier json parsing

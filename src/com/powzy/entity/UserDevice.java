@@ -2,6 +2,8 @@ package com.powzy.entity;
 
 import java.util.Date;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
@@ -10,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class UserDevice {
 	@Id
 	Long customerId;

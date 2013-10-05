@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,10 +15,12 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.powzy.jsonmodel.FbFriend;
 
 @Entity
 @NoArgsConstructor
 @XmlRootElement
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Users{
 	/** */
 	public static Key<Users> key(long id) {
@@ -61,7 +65,7 @@ public class Users{
 	String profileUr;
 	
 	@Getter @Setter
-	@Index List<Long> friends = new ArrayList<Long>();
+	@Index List<FbFriend> friends = new ArrayList<FbFriend>();
 	
 	/**
 	 * powzy signupUser

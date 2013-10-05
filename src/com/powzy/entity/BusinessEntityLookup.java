@@ -2,6 +2,7 @@ package com.powzy.entity;
 
 import java.util.Date;
 
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
