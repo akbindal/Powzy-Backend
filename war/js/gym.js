@@ -468,18 +468,18 @@ function showQRScreen()
 			try{
 				var xmlHttp = new XMLHttpRequest();
 
-				xmlHttp.onreadystatechange = function(){
-					if(xmlHttp.readyState === 4)
+				//xmlHttp.onreadystatechange = function(){
+					/*if(xmlHttp.readyState === 4)
 					{
 						if(xmlHttp.status === 200)
-							QRHandler(JSON.parse(xmlHttp.responseText));
+							//QRHandler(JSON.parse(xmlHttp.responseText));
 						else
 						{
-							console.log("xmlHttp.status = "+xmlHttp.status);
-							QRHandler(null);//JSON.parse('{"gameLaunchId":"5714368087982080"}'));
+							//console.log("xmlHttp.status = "+xmlHttp.status);
+							//QRHandler(null);//JSON.parse('{"gameLaunchId":"5714368087982080"}'));
 						}
-					}
-				};
+					}*/
+				//};
 
 				xmlHttp.open( "GET", "http://myApp.example.org/qrreader", true );
 				xmlHttp.send( null );
