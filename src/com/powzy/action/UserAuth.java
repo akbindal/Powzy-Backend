@@ -43,6 +43,7 @@ import com.powzy.util.WrongActionException;
 
 @Path("/users")
 public class UserAuth {
+	
 	//post
 	@POST
 	@Path("/signup")
@@ -295,12 +296,10 @@ public class UserAuth {
 	@GET
 	@Path("/getfriend/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Users> getFriendList(@PathParam("id") Long id) {
-		List<Users> friends = new ArrayList<Users>();
+	public List<FbFriend> getFriendList(@PathParam("id") Long id) {
+		List<FbFriend> friends;
 		Users user = ofy().load().userById(id);
-		for(FbFriend friendId:user.getFriends()){
-			//friends.add(ofy().load().userById(friendId));
-		}
+		friends = user.getFriends();
 		return friends;
 	}
 }

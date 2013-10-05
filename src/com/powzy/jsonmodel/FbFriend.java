@@ -4,10 +4,13 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.googlecode.objectify.annotation.Embed;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Embed
 @XmlRootElement
 @NoArgsConstructor
 public class FbFriend implements Serializable{/**
