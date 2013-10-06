@@ -29,7 +29,7 @@ var screenW = 640,
 	scaleX, scaleY,
 	xPadding = 0, yPadding = 0,
 	resizeNo = 0,
-	font= "TimesNewRoman",
+	font= "Century Gothic",
 
 	preLoadStart = false,
 	loadComplete = false,
@@ -471,6 +471,7 @@ function showQRScreen()
 				xmlHttp.onreadystatechange = function(){
 					if(xmlHttp.readyState === 4)
 					{
+						
 					}
 				};
 
@@ -483,14 +484,16 @@ function showQRScreen()
 				  "currentDate": (new Date()).getTime(),
 				}
 				text.setText("Checked In");
-				completed++;
-				gameLayer.draw();
-
+				
 			}
 			catch(e){
 				console.log("Catched a thrown exception"+e);
 				QRHandler("err")//JSON.parse('{"gameLaunchId":"5714368087982080"}'));
 			}
+			
+			setTimeout(function(){text.setText("Checked In");
+			completed++;
+			gameLayer.draw();},7000)
 		});
 		var backBtnGrp = new Kinetic.Group({
 			x: 270, y: 236 + qrbracket.getWidth() + 28,
@@ -970,23 +973,23 @@ function preLoader()
             	var bgCol = new Kinetic.Rect(
             	{
             		x:0, y:0, width:window.innerWidth, height:window.innerHeight,
-            		fill:"black"
+            		fill:"white"
             	});
             	backgroundLayer.add(bgCol);
 
                 var preLoadBg = new Kinetic.Image(
                 {
                 	image: bg,
-                	x: window.innerWidth/2-128, y:window.innerHeight/2-128,
+                	x: window.innerWidth/2-128 +18, y:window.innerHeight/2-128,
                 });
                 backgroundLayer.add(preLoadBg);
 
                 var brandText = new Kinetic.Text(
                 {
                 	fontFamily: "BookmanOldStyle",
-                	text: 'www.aplus1games.com',
+                	text: 'Simply Fun',
                 	x: window.innerWidth/2, y:window.innerHeight/2+150*scaleY,
-                	stroke: "white",
+                	stroke: "black",
                 	fontSize: 40,
                 });
                 brandText.setOffsetX(brandText.getWidth()/2);
@@ -1002,7 +1005,7 @@ function preLoader()
                 	fontFamily: "BookmanOldStyle",
                 	text: 'Loading: '+Math.round(loaded*100)+"%",
                 	x: window.innerWidth/2, y:window.innerHeight/2+250*scaleY,
-                	stroke: "white",
+                	stroke: "black",
                 	fontSize: 25,
                 });
                 loadingText.setOffsetX(loadingText.getWidth()/2);
@@ -1013,7 +1016,7 @@ function preLoader()
                 	x: window.innerWidth/2-200*scaleX, y:window.innerHeight/2+300*scaleY,
                 	width: 1,
                 	height: 15*scaleY,
-                	fill: "white"
+                	fill: "black"
                 });
                 backgroundLayer.add(loadProgressBar);
                 stage.add(backgroundLayer);
@@ -1040,7 +1043,7 @@ function preLoader()
 
         var bg = new Image();
         bg.onload = onImgLoad;
-        bg.src = 'images/aplus1.png';
+        bg.src = 'images/powzyfun.png';
 
 		imageData = "js/atlas.js";
 
