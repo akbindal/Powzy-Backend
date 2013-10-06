@@ -12,6 +12,7 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 import com.powzy.entity.BusinessEntity;
 import com.powzy.entity.Users;
 
@@ -40,12 +41,5 @@ public class FeedItem implements Serializable{
 	String imageUrl;
 	
 	@Getter @Setter
-	Key<Users> userId;
-	
-	@Getter @Setter
-	Key<BusinessEntity> bussId;
-	
-	@Getter @Setter
-	Long timeStamp;
-	
+	@Index Long timeStamp;	
 }

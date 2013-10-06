@@ -3,6 +3,7 @@ package com.powzy;
 
 import com.googlecode.objectify.ObjectifyFactory;
 import com.powzy.entity.*;
+import com.powzy.feed.FeedItem;
 import com.powzy.game.GameLaunch;
 import com.powzy.game.Level;
 import com.powzy.game.UserGame;
@@ -38,6 +39,8 @@ public class OfyFactory extends ObjectifyFactory {
 		
 		this.register(GameStatus.class);
 		this.register(GymGameStatus.class);
+		
+		this.register(FeedItem.class);
 		/**************/
 		long millis = System.currentTimeMillis() - time;
 		//Log.info("Registration took "+millis+"millis");
