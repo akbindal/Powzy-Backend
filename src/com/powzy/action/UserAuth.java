@@ -33,9 +33,9 @@ import org.codehaus.jackson.type.TypeReference;
 
 
 import com.powzy.entity.BusinessEntity;
+import com.powzy.entity.FbFriend;
 import com.powzy.entity.UserEmailLookup;
 import com.powzy.entity.Users;
-import com.powzy.jsonmodel.FbFriend;
 import com.powzy.jsonmodel.FbUser;
 import com.powzy.jsonmodel.Signup;
 import com.powzy.util.UnauthorizedException;
@@ -216,7 +216,7 @@ public class UserAuth {
         ObjectMapper mapper = new ObjectMapper();
         JsonFactory jf = new JsonFactory();
         JsonParser jp = jf.createJsonParser(graph);
-        final JsonNode arrNode = mapper.readTree(jp).get("objects");
+        final JsonNode arrNode = mapper.readTree(jp).get("data");
         if (arrNode.isArray()) {
         	int count=0;
             for (final JsonNode objNode : arrNode) {

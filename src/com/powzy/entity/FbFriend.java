@@ -1,4 +1,4 @@
-package com.powzy.jsonmodel;
+package com.powzy.entity;
 
 import java.io.Serializable;
 

@@ -8,9 +8,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.powzy.entity.BusinessEntity;
+import com.powzy.entity.Users;
 
 @Entity
 @Cache
@@ -28,5 +31,21 @@ public class FeedItem implements Serializable{
 	Long id;
 	
 	@Getter @Setter
-	Integer activityType;
+	String title;
+	
+	@Getter @Setter
+	String text;
+	
+	@Getter @Setter
+	String imageUrl;
+	
+	@Getter @Setter
+	Key<Users> userId;
+	
+	@Getter @Setter
+	Key<BusinessEntity> bussId;
+	
+	@Getter @Setter
+	Long timeStamp;
+	
 }
