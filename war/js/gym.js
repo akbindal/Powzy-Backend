@@ -453,7 +453,7 @@ function showQRScreen()
 			width: wh[0],
 			fontSize: 25,
 			fill:"black",
-			text: "Scan1",
+			text: "Scan",
 			fontFamily: font,
 			align: "center"
 		});
@@ -461,36 +461,38 @@ function showQRScreen()
 		btnGrp.add(text);
 
 		btnGrp.on("click touchend", function(){
-			
+
 			if(text.getText() === "Checked In")
 				return;
 
 			try{
 				var xmlHttp = new XMLHttpRequest();
 
-				//xmlHttp.onreadystatechange = function(){
-					/*if(xmlHttp.readyState === 4)
+				xmlHttp.onreadystatechange = function(){
+					if(xmlHttp.readyState === 4)
 					{
-						if(xmlHttp.status === 200)
-							//QRHandler(JSON.parse(xmlHttp.responseText));
-						else
-						{
-							//console.log("xmlHttp.status = "+xmlHttp.status);
-							//QRHandler(null);//JSON.parse('{"gameLaunchId":"5714368087982080"}'));
-						}
-					}*/
-				//};
+					}
+				};
 
 				xmlHttp.open( "GET", "http://myApp.example.org/qrreader", true );
 				xmlHttp.send( null );
+					var params = {
+				  "userGameId": userGameId,
+				  "gameLaunchId": gameLaunchId,
+				  "userId": userId,
+				  "currentDate": (new Date()).getTime(),
+				}
+				text.setText("Checked In");
+				completed++;
+				gameLayer.draw();
+
 			}
 			catch(e){
 				console.log("Catched a thrown exception"+e);
 				QRHandler("err")//JSON.parse('{"gameLaunchId":"5714368087982080"}'));
 			}
 		});
-
-			var backBtnGrp = new Kinetic.Group({
+		var backBtnGrp = new Kinetic.Group({
 			x: 270, y: 236 + qrbracket.getWidth() + 28,
 		});
 		qrScreen.add(backBtnGrp);
@@ -522,47 +524,6 @@ function showQRScreen()
 		qrScreen.show();
 	gameLayer.draw();
 }
-
-function QRHandler(param)
-{}
-
-
-function QRHandler1()
-{	
-	var amtText = new Kinetic.Text({
-		x: screenW/2, y: 636,
-		fontSize: 30,
-		fill:"white",
-		text: "CHF 1",
-		fontFamily: font
-	});
-	qrScreen.add(amtText);
-	gameLayer.add(qrScreen);
-	gameLayer.draw();
-	var xmlHttp = new XMLHttpRequest();
-	
-	xmlHttp.onreadystatechange = function(){
-		if(xmlHttp.readyState === 4)
-		{
-			if(xmlHttp.status === 200)
-				QRHandler(JSON.parse(xmlHttp.responseText));
-			else
-			{
-				console.log("xmlHttp.status = "+xmlHttp.status);
-				QRHandler(null);//JSON.parse('{"gameLaunchId":"5714368087982080"}'));
-			}
-		}
-	};
-
-	xmlHttp.open( "GET", "http://myApp.example.org/qrreader2", true );
-	xmlHttp.send( null );
-		
-}
-
-
-
-
-
 
 function createImage(imageNm, spriteNm, grp)
 {
